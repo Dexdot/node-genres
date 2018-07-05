@@ -4,7 +4,6 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 // Require modules
-const Joi = require('joi');
 const debug = require('debug')('app:debug');
 const config = require('config');
 
