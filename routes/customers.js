@@ -1,11 +1,12 @@
 // Routes: '/api/customers'
 
+const { validate } = require('../models/customers');
+
 const express = require('express');
 const router = express.Router();
 
 const {
   createCustomer,
-  validateCustomer,
   removeCustomer,
   editCustomer,
   getCustomer,
@@ -32,7 +33,7 @@ router.get('/:id', (req, res) => {
 // POST
 router.post('/', (req, res) => {
   // Validate
-  const { error } = validateCustomer(req.body);
+  const { error } = validate(req.body);
   if (error) {
     res.send(error.details[0].message);
     return;
@@ -53,7 +54,7 @@ router.put('/:id', (req, res) => {
         return res.status(404).send('Customer with the given ID was not found');
 
       // Validate
-      const { error } = validateCustomer(req.body);
+      const { error } = validate(req.body);
       if (error) {
         res.send(error.details[0].message);
         return;

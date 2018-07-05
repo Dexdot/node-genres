@@ -1,10 +1,11 @@
 // Routes: '/api/genres'
 
+const { validate } = require('../models/genres');
+
 const express = require('express');
 const router = express.Router();
 
 const {
-  validateGenre,
   editGenre,
   loadGenre,
   removeGenre,
@@ -31,7 +32,7 @@ router.get('/:id', (req, res) => {
 // POST
 router.post('/', (req, res) => {
   // Validate
-  const { error } = validateGenre(req.body);
+  const { error } = validate(req.body);
   if (error) {
     res.send(error.details[0].message);
     return;
@@ -56,7 +57,7 @@ router.put('/:id', (req, res) => {
         return res.status(404).send('Genre with the given ID was not found');
 
       // Validate
-      const { error } = validateGenre(req.body);
+      const { error } = validate(req.body);
       if (error) {
         res.send(error.details[0].message);
         return;

@@ -1,29 +1,10 @@
-const Joi = require('joi');
+const { Customer } = require('../models/customers');
 const mongoose = require('mongoose');
 
 mongoose
   .connect('mongodb://localhost/vidly')
   .then(() => console.log('Connected to a DB'))
   .catch(err => console.log('Couldnt connect to a DB', err));
-
-const customerSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  phone: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  isGold: {
-    type: Boolean,
-    default: false
-  }
-});
-
-const Customer = mongoose.model('Customer', customerSchema);
 
 // Create customer
 const createCustomer = async customer => {
@@ -34,17 +15,6 @@ const createCustomer = async customer => {
   } catch (e) {
     return e.message;
   }
-};
-
-// Validate customer
-const validateCustomer = customer => {
-  const schema = {
-    name: Joi.string().required(),
-    phone: Joi.string().required(),
-    isGold: Joi.boolean()
-  };
-
-  return Joi.validate(customer, schema);
 };
 
 // Delete customer
@@ -77,7 +47,6 @@ const getCustomers = async () => {
 
 module.exports = {
   createCustomer,
-  validateCustomer,
   removeCustomer,
   editCustomer,
   getCustomer,
