@@ -1,28 +1,16 @@
 // Routes: '/api/genres'
 
-const Joi = require('joi');
 const express = require('express');
 const router = express.Router();
 
 const {
+  validateGenre,
   editGenre,
   loadGenre,
   removeGenre,
   getGenre,
   getGenres
 } = require('../db/genres');
-
-// Validate
-const validateGenre = genre => {
-  const schema = {
-    name: Joi.string()
-      .min(3)
-      .max(255)
-      .required()
-  };
-
-  return Joi.validate(genre, schema);
-};
 
 // GET
 router.get('/', (req, res) => {

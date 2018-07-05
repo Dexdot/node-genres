@@ -10,6 +10,7 @@ const config = require('config');
 // Require routes
 const home = require('./routes/home');
 const genres = require('./routes/genres');
+const customers = require('./routes/customers');
 
 // App
 const express = require('express');
@@ -36,6 +37,7 @@ if (app.get('env') === 'development') {
 // Routes
 app.use('/', home);
 app.use('/api/genres', genres);
+app.use('/api/customers', customers);
 
 // Server
 const port = process.env.PORT || 3000;

@@ -1,9 +1,9 @@
-// Require mongoose
+const Joi = require('joi');
 const mongoose = require('mongoose');
 
 // Connect to the DB
 mongoose
-  .connect('mongodb://localhost/genres')
+  .connect('mongodb://localhost/vidly')
   .then(() => console.log('Connected to a MongoDB'))
   .catch(err => console.log('Connected to a MongoDB', err));
 
@@ -21,6 +21,18 @@ const genreSchema = mongoose.Schema({
 
 // Create the model
 const Genre = mongoose.model('Genre', genreSchema);
+
+// Validate genre
+const validateGenre = genre => {
+  const schema = {
+    name: Joi.string()
+      .min(3)
+      .max(255)
+      .required()
+  };
+
+  return Joi.validate(genre, schema);
+};
 
 // Load the genre to the database
 const loadGenre = async genre => {
@@ -59,4 +71,11 @@ const editGenre = async (id, genre) => {
 // Delete the genre
 const removeGenre = async id => await Genre.findByIdAndRemove(id);
 
-module.exports = { removeGenre, editGenre, loadGenre, getGenre, getGenres };
+module.exports = {
+  validateGenre,
+  removeGenre,
+  editGenre,
+  loadGenre,
+  getGenre,
+  getGenres
+};
