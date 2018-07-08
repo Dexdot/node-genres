@@ -11,6 +11,7 @@ const config = require('config');
 const home = require('./routes/home');
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
+const movies = require('./routes/movies');
 
 // App
 const express = require('express');
@@ -38,6 +39,7 @@ if (app.get('env') === 'development') {
 app.use('/', home);
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
+app.use('/api/movies', movies);
 
 // Server
 const port = process.env.PORT || 3000;
