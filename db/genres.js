@@ -22,13 +22,10 @@ const loadGenre = async genre => {
 const getGenre = async id => await Genre.findById(id);
 
 // Get all genres
-const getGenres = async () => {
-  const genres = await Genre.find()
+const getGenres = async () =>
+  await Genre.find()
     .sort('name')
     .select('name');
-
-  return genres;
-};
 
 // Edit the genre
 const editGenre = async (id, genre) => {

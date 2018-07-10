@@ -32,7 +32,7 @@ const loadMovie = async movie => {
 const getMovie = async id => await Movie.findById(id);
 
 // Get all movies
-const getMovies = async () => await Movie.find().sort('name');
+const getMovies = async () => await Movie.find().sort('title');
 
 // Edit the movie
 const editMovie = async (id, movie) => {
