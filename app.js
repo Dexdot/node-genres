@@ -1,3 +1,7 @@
+// Joi init
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
+
 // Require middlewares
 const logger = require('./middleware/logger');
 const helmet = require('helmet');
