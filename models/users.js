@@ -40,6 +40,7 @@ const validateUser = user => {
       .max(255)
       .required()
       .email(),
+    // 'joi-password-complexity npm package'
     password: Joi.string()
       .min(5)
       .max(1024)

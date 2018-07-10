@@ -2,6 +2,7 @@
 
 const { User, validate } = require('../models/users');
 
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
@@ -41,7 +42,7 @@ router.post('/', async (req, res) => {
   // Save
   const userObj = new User({ ...req.body });
   const result = await userObj.save();
-  res.send(result);
+  res.send(_.pick(result, ['_id', 'name', 'email']));
 });
 
 // PUT
