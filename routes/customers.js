@@ -1,37 +1,34 @@
 // Routes: '/api/customers'
 
-const { validate } = require('../models/customers');
+const { Customer, validate } = require('../models/customers');
 
+const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
-const {
-  createCustomer,
-  removeCustomer,
-  editCustomer,
-  getCustomer,
-  getCustomers
-} = require('../db/customers');
+// Connect to the DB
+mongoose
+  .connect('mongodb://localhost/vidly')
+  .then(() => console.log('Connected to a MongoDB'))
+  .catch(err => console.log('Connected to a MongoDB', err));
 
 // GET
-router.get('/', (req, res) => {
-  getCustomers()
-    .then(customers => res.send(customers))
-    .catch(err => res.send(err.message));
+router.get('/', async (req, res) => {
+  const customers = await Customer.find()
+    .sort('name')
+    .select({ name: 1, phone: 1 });
+  res.send(customers);
 });
 
-router.get('/:id', (req, res) => {
-  getCustomer(req.params.id)
-    .then(customer => {
-      if (!customer)
-        res.status(404).send('Customer with the given ID was not founded');
-      res.send(customer);
-    })
-    .catch(err => res.send(err.message));
+router.get('/:id', async (req, res) => {
+  const customer = await Customer.findById(req.params.id);
+  if (!customer)
+    res.status(404).send('Customer with the given ID was not founded');
+  res.send(customer);
 });
 
 // POST
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // Validate
   const { error } = validate(req.body);
   if (error) {
@@ -39,44 +36,43 @@ router.post('/', (req, res) => {
     return;
   }
 
-  const customer = { ...req.body };
-  createCustomer(customer)
-    .then(result => res.send(result))
-    .catch(err => res.send(err.message));
+  // Save
+  const customerObj = new Customer({ ...req.body });
+  const result = await customerObj.save();
+  res.send(result);
 });
 
 // PUT
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  getCustomer(id, req.body)
-    .then(customer => {
-      if (!customer)
-        return res.status(404).send('Customer with the given ID was not found');
+  const customer = await Customer.findById(id);
+  if (!customer)
+    return res.status(404).send('Customer with the given ID was not found');
 
-      // Validate
-      const { error } = validate(req.body);
-      if (error) {
-        res.send(error.details[0].message);
-        return;
-      }
+  // Validate
+  const { error } = validate(req.body);
+  if (error) {
+    res.send(error.details[0].message);
+    return;
+  }
 
-      // Edit customer
-      editCustomer(id, req.body)
-        .then(newCustomer => res.send(newCustomer))
-        .catch(err => res.send(err.message));
-    })
-    .catch(err =>
-      res.status(404).send('Customer with the given ID was not found')
-    );
+  // Edit customer
+  const updateObj = {
+    $set: {
+      ...req.body
+    }
+  };
+
+  const result = await Customer.findByIdAndUpdate(id, updateObj, { new: true });
+  res.send(result);
 });
 
 // DELETE
-router.delete('/:id', (req, res) => {
-  removeCustomer(req.params.id)
-    .then(result => res.send(result))
-    .catch(err => {
-      res.status(404).send('Customer with the given ID was not founded');
-    });
+router.delete('/:id', async (req, res) => {
+  const customer = await Customer.findByIdAndRemove(req.params.id);
+  if (!customer)
+    res.status(404).send('Customer with the given ID was not founded');
+  res.send(customer);
 });
 
 module.exports = router;
