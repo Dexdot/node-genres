@@ -52,5 +52,5 @@ app.use('/api/users', users);
 // Server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Listening on port ${port}...`);
+  debug(`Listening on port ${port}...`);
 });
